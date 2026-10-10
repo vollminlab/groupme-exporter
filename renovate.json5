@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  // Conventions match vollminlab/k8s-vollminlab-cluster so dependency PRs look the
+  // same across the org: same quiet-hours schedule, same labels, same commit prefix.
+  "timezone": "America/New_York",
+  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
+  "labels": ["renovate", "dependencies"],
+  "commitMessagePrefix": "chore(deps):",
+  "enabledManagers": ["pip_requirements"],
+  "packageRules": [
+    {
+      // requests and its four transitive pins (certifi, charset-normalizer, idna,
+      // urllib3) are one install set. One PR per package would raise five PRs that
+      // each edit requirements.txt, and merging any one leaves the rest to rebase.
+      "matchManagers": ["pip_requirements"],
+      "groupName": "python dependencies"
+    }
+  ]
+  // No automerge: this repo has no CI, so there is no check that could make a
+  // dependency PR "green". Every update is reviewed by hand.
+}
